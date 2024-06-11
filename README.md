@@ -1,4 +1,4 @@
-# mad_project
+# Sum It Up - AI-powered notes summarisation tool
 
 A new Flutter project.
 
