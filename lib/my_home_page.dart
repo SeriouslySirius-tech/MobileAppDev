@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mad_project/models/file_object.dart';
 import 'package:mad_project/recent_files.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage(
-      {super.key, required this.files, required this.onFavouritePress});
+class MyHomePage extends ConsumerStatefulWidget {
+  const MyHomePage({super.key, required this.files});
   final List<FileObject> files;
-  final void Function(FileObject f) onFavouritePress;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends ConsumerState<MyHomePage> {
   // String formattedDate(DateTime date){
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text('Expense Deleted'),
+                    content: const Text('Doc has been deleted'),
                     duration: const Duration(seconds: 4),
                     action: SnackBarAction(
                       label: "Undo",
@@ -45,7 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             child: RecentFiles(
               file: widget.files[index],
-              onPress: widget.onFavouritePress,
             ),
           );
         },

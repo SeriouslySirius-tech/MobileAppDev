@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mad_project/models/file_object.dart';
+import 'package:mad_project/providers/favourite_docs_provider.dart';
 
-class RecentFiles extends StatelessWidget {
+class RecentFiles extends ConsumerWidget {
   final FileObject file;
-  final void Function(FileObject f) onPress;
 
-  const RecentFiles({super.key, required this.file, required this.onPress});
+  const RecentFiles({super.key, required this.file});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {},
       child: ListTile(
@@ -26,31 +27,34 @@ class RecentFiles extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           trailing: IconButton(
-            icon: const Icon(Icons.favorite_outline),
-            onPressed: () => onPress(file),
+            onPressed: () {
+              final wasAdded = ref
+                  .read(favouriteDocsProvider.notifier)
+                  .toggleFavourite(file);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: const Duration(seconds: 2),
+                  content: Text(
+                    wasAdded
+                        ? "Doc is added to favourites"
+                        : "Doc is removed from favourites",
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimaryFixed,
+                        ),
+                  ),
+                  action: SnackBarAction(
+                    label: "Undo",
+                    onPressed: () {
+                      ref
+                          .read(favouriteDocsProvider.notifier)
+                          .toggleFavourite(file);
+                    },
+                  )));
+            },
+            icon: ref.read(favouriteDocsProvider.notifier).isFavourite(file)
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_outline),
           )),
     );
   }
 }
-
-      // child: Padding(
-      //   padding: const EdgeInsets.all(8.0),
-      //   child: Row(
-      //     children: [
-      //       Expanded(
-      //         child: Text(
-      //           fileName,
-      //           style: Theme.of(context).textTheme.titleSmall!.copyWith(
-      //               color: Theme.of(context).colorScheme.onSecondaryContainer),
-      //         ),
-      //       ),
-      //       Expanded(
-      //         child: Text(
-      //           date,
-      //           style: Theme.of(context).textTheme.titleSmall!.copyWith(
-      //               color: Theme.of(context).colorScheme.onSecondaryContainer),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),

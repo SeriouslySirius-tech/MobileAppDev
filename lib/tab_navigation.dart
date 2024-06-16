@@ -2,59 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:mad_project/data/files.dart';
 import 'package:mad_project/favourites_page.dart';
 import 'package:mad_project/floating_action_picker.dart';
-import 'package:mad_project/models/file_object.dart';
 import 'package:mad_project/my_home_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mad_project/providers/favourite_docs_provider.dart';
 
-class TabNavigation extends StatefulWidget {
+class TabNavigation extends ConsumerStatefulWidget {
   const TabNavigation({super.key});
 
   @override
-  State<TabNavigation> createState() {
+  ConsumerState<TabNavigation> createState() {
     return _TabNavigationState();
   }
 }
 
-class _TabNavigationState extends State<TabNavigation> {
+class _TabNavigationState extends ConsumerState<TabNavigation> {
   int currentIndex = 0;
-  final List<FileObject> favouriteDocs = [];
-
-  void _showInfoMessage(String message, FileObject f, int index) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      duration: const Duration(seconds: 2),
-      content: Text(
-        message,
-        style: Theme.of(context).textTheme.titleSmall!.copyWith(
-              color: Theme.of(context).colorScheme.onPrimaryFixed,
-            ),
-      ),
-      action: SnackBarAction(
-          label: "Undo",
-          onPressed: () {
-            setState(() {
-              favouriteDocs.insert(index, f);
-            });
-          }),
-    ));
-  }
-
-  void isFavourite(FileObject f) {
-    final isExisting = favouriteDocs.contains(f);
-    final existingIndex = favouriteDocs.indexOf(f);
-
-    if (isExisting) {
-      setState(() {
-        favouriteDocs.remove(f);
-      });
-      _showInfoMessage('Doc removed as a favorite.', f, existingIndex);
-    } else {
-      setState(() {
-        favouriteDocs.add(f);
-        _showInfoMessage(
-            'Doc added as a favourite favorite!', f, existingIndex);
-      });
-    }
-  }
 
   void selectPage(int index) {
     setState(() {
@@ -64,16 +26,15 @@ class _TabNavigationState extends State<TabNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final favouriteDocs = ref.watch(favouriteDocsProvider);
     Widget activePage = MyHomePage(
       files: files,
-      onFavouritePress: isFavourite,
     );
     var activePageTitle = "Recent Notes";
 
     if (currentIndex == 1) {
       activePage = FavouritesPage(
         files: favouriteDocs,
-        onPress: isFavourite,
       );
       activePageTitle = "Favourites";
     }
