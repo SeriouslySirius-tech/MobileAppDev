@@ -15,6 +15,16 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
   // String formattedDate(DateTime date){
   @override
   Widget build(BuildContext context) {
+    if (widget.files.isEmpty) {
+      return Center(
+          child: Text(
+        "Add some files here!",
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),
+      ));
+    }
     return Scaffold(
       appBar: AppBar(),
       body: ListView.builder(
