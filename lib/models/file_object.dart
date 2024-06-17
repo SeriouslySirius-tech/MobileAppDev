@@ -1,10 +1,10 @@
 class FileObject {
   final String fileName;
-  final String fileType;
+  final String filePath;
   final String date;
   const FileObject({
     required this.fileName,
-    required this.fileType,
+    required this.filePath,
     required this.date,
   });
 }

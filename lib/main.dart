@@ -8,15 +8,17 @@ final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
     brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(255, 95, 6, 150),
+    seedColor: const Color.fromARGB(255, 4, 39, 236),
   ),
   textTheme: GoogleFonts.latoTextTheme(),
 );
 
 void main() {
-  runApp(const ProviderScope(
-    child: App(),
-  ));
+  runApp(
+    const ProviderScope(
+      child: App(),
+    ),
+  );
 }
 
 class App extends StatelessWidget {

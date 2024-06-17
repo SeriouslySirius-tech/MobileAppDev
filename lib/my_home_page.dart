@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mad_project/models/file_object.dart';
@@ -12,7 +14,23 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage> {
-  // String formattedDate(DateTime date){
+  File? deletedFile;
+  String? contents;
+  Future<void> deleteFile(FileObject f) async {
+    final file = File(f.filePath);
+    deletedFile = file;
+    contents = await file.readAsString().then((String text) => contents = text);
+    await file.delete();
+  }
+
+  Future<void> undoDeletion() async {
+    if (deletedFile != null) {
+      await deletedFile!.create(recursive: true); // Recreate the file
+      deletedFile!.writeAsString(contents!);
+      deletedFile = null; // Clear deletedFile after undo
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.files.isEmpty) {
@@ -37,6 +55,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                 final deletedDoc = widget.files[index];
                 setState(() {
                   widget.files.remove(deletedDoc);
+                  deleteFile(deletedDoc);
                 });
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -47,6 +66,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                       onPressed: () {
                         setState(() {
                           widget.files.insert(index, deletedDoc);
+                          undoDeletion();
                         });
                       },
                     )));

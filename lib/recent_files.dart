@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mad_project/file_display.dart';
 import 'package:mad_project/models/file_object.dart';
 import 'package:mad_project/providers/favourite_docs_provider.dart';
 
 class RecentFiles extends ConsumerWidget {
   final FileObject file;
 
-  const RecentFiles({super.key, required this.file});
+  RecentFiles({super.key, required this.file});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        try {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (ctx) => FileDisplayWidget(file: file)));
+        } catch (error) {
+          // Handle error (e.g., display a snackbar)
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Error opening file")));
+        }
+      },
       child: ListTile(
           leading: const Icon(Icons.picture_as_pdf),
           title: Text(
@@ -31,7 +41,10 @@ class RecentFiles extends ConsumerWidget {
               ref.read(favouriteDocsProvider.notifier).toggleFavourite(file);
             },
             icon: ref.read(favouriteDocsProvider.notifier).isFavourite(file)
-                ? const Icon(Icons.favorite)
+                ? Icon(
+                    Icons.favorite,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  )
                 : const Icon(Icons.favorite_outline),
           )),
     );

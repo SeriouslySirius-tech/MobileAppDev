@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mad_project/data/files.dart';
+import 'package:mad_project/providers/files.dart';
 import 'package:mad_project/favourites_page.dart';
 import 'package:mad_project/floating_action_picker.dart';
 import 'package:mad_project/my_home_page.dart';
@@ -27,6 +27,7 @@ class _TabNavigationState extends ConsumerState<TabNavigation> {
   @override
   Widget build(BuildContext context) {
     final favouriteDocs = ref.watch(favouriteDocsProvider);
+    final files = ref.watch(filesProvider);
     Widget activePage = MyHomePage(
       files: files,
     );
@@ -47,15 +48,21 @@ class _TabNavigationState extends ConsumerState<TabNavigation> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: selectPage,
         currentIndex: currentIndex,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.timelapse),
-            label: 'Recent',
-          ),
+              icon: const Icon(Icons.timelapse),
+              label: 'Recent',
+              activeIcon: Icon(
+                Icons.timelapse,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              )),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_rounded),
-            label: "Favourites",
-          ),
+              icon: const Icon(Icons.favorite_rounded),
+              label: "Favourites",
+              activeIcon: Icon(
+                Icons.favorite_rounded,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              )),
         ],
       ),
     );
