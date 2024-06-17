@@ -37,6 +37,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         itemBuilder: (context, index) {
           return Dismissible(
             key: ValueKey(widget.files[index].fileName),
+            direction: DismissDirection.endToStart,
             onDismissed: (direction) {
               if (direction == DismissDirection.endToStart) {
                 final deletedDoc = widget.files[index];
