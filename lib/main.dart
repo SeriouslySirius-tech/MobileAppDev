@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:mad_project/my_home_page.dart';
 import 'package:mad_project/tab_navigation.dart';
@@ -6,11 +7,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final theme = ThemeData(
   useMaterial3: true,
+  brightness: Brightness.dark,
   colorScheme: ColorScheme.fromSeed(
+    seedColor: Color.fromARGB(255, 139, 4, 206),
     brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(255, 4, 39, 236),
+  ).copyWith(
+    primary: Colors.black,
+    primaryContainer: const Color.fromARGB(240, 96, 22, 165),
+    onPrimaryContainer: const Color.fromARGB(255, 255, 255, 255),
+    error: const Color.fromARGB(255, 202, 17, 57),
+    onError: Colors.white,
   ),
-  textTheme: GoogleFonts.latoTextTheme(),
+  textTheme: GoogleFonts.robotoFlexTextTheme(),
 );
 
 void main() {
@@ -29,6 +37,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: theme,
       home: const TabNavigation(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

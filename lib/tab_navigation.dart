@@ -26,17 +26,13 @@ class _TabNavigationState extends ConsumerState<TabNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final favouriteDocs = ref.watch(favouriteDocsProvider);
     final files = ref.watch(filesProvider);
-    Widget activePage = MyHomePage(
-      files: files,
-    );
+    final favouriteFiles = ref.watch(favouriteDocsProvider);
+    Widget activePage = MyHomePage(files: files);
     var activePageTitle = "Recent Notes";
 
     if (currentIndex == 1) {
-      activePage = FavouritesPage(
-        files: favouriteDocs,
-      );
+      activePage = FavouritesPage(files: favouriteFiles);
       activePageTitle = "Favourites";
     }
     return Scaffold(

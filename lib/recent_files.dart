@@ -7,7 +7,7 @@ import 'package:mad_project/providers/favourite_docs_provider.dart';
 class RecentFiles extends ConsumerWidget {
   final FileObject file;
 
-  RecentFiles({super.key, required this.file});
+  const RecentFiles({super.key, required this.file});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

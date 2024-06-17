@@ -15,6 +15,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   // String formattedDate(DateTime date){
   @override
   Widget build(BuildContext context) {
+    // final List<FileObject> files = ref.watch(favouriteDocsProvider);
     if (widget.files.isEmpty) {
       return Center(
           child: Text(
@@ -26,35 +27,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
       ));
     }
     return Scaffold(
-      appBar: AppBar(),
       body: ListView.builder(
         itemCount: widget.files.length,
         itemBuilder: (context, index) {
-          return Dismissible(
-            key: ValueKey(widget.files[index].fileName),
-            onDismissed: (direction) {
-              if (direction == DismissDirection.endToStart) {
-                final deletedDoc = widget.files[index];
-                setState(() {
-                  widget.files.remove(deletedDoc);
-                });
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text('Doc has been removed from favourites'),
-                    duration: const Duration(seconds: 4),
-                    action: SnackBarAction(
-                      label: "Undo",
-                      onPressed: () {
-                        setState(() {
-                          widget.files.insert(index, deletedDoc);
-                        });
-                      },
-                    )));
-              }
-            },
-            child: RecentFiles(
-              file: widget.files[index],
-            ),
+          return RecentFiles(
+            file: widget.files[index],
           );
         },
       ),

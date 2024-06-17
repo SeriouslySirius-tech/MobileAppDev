@@ -1,7 +1,8 @@
 import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mad_project/providers/files.dart';
 import 'package:mad_project/models/file_object.dart';
 import 'package:mad_project/recent_files.dart';
 
@@ -14,29 +15,16 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage> {
-  File? deletedFile;
-  String? contents;
-  Future<void> deleteFile(FileObject f) async {
-    final file = File(f.filePath);
-    deletedFile = file;
-    contents = await file.readAsString().then((String text) => contents = text);
-    await file.delete();
-  }
-
-  Future<void> undoDeletion() async {
-    if (deletedFile != null) {
-      await deletedFile!.create(recursive: true); // Recreate the file
-      deletedFile!.writeAsString(contents!);
-      deletedFile = null; // Clear deletedFile after undo
-    }
-  }
+  String? deletedFilePath;
+  late Uint8List contents;
 
   @override
   Widget build(BuildContext context) {
+    // final widget.files = ref.watch(filesProvider);
     if (widget.files.isEmpty) {
       return Center(
           child: Text(
-        "Add some files here!",
+        "Add some widget.files here!",
         style: Theme.of(context)
             .textTheme
             .titleLarge!
@@ -44,7 +32,6 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       ));
     }
     return Scaffold(
-      appBar: AppBar(),
       body: ListView.builder(
         itemCount: widget.files.length,
         itemBuilder: (context, index) {
@@ -54,8 +41,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
               if (direction == DismissDirection.endToStart) {
                 final deletedDoc = widget.files[index];
                 setState(() {
-                  widget.files.remove(deletedDoc);
-                  deleteFile(deletedDoc);
+                  deletedFilePath = deletedDoc.filePath;
+                  File f = File(deletedFilePath!);
+                  contents = f.readAsBytesSync();
+                  ref.read(filesProvider.notifier).removeDoc(deletedDoc);
                 });
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -65,8 +54,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                       label: "Undo",
                       onPressed: () {
                         setState(() {
-                          widget.files.insert(index, deletedDoc);
-                          undoDeletion();
+                          ref
+                              .read(filesProvider.notifier)
+                              .insertDoc(index, deletedDoc, contents);
                         });
                       },
                     )));
