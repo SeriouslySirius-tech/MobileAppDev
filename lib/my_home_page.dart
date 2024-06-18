@@ -24,7 +24,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
     if (widget.files.isEmpty) {
       return Center(
           child: Text(
-        "Add some widget.files here!",
+        "Add some files here!",
         style: Theme.of(context)
             .textTheme
             .titleLarge!

@@ -24,10 +24,10 @@ class FilesNotifier extends StateNotifier<List<FileObject>> {
     }
 
     // Create some files within the new directory
-    // for (int i = 1; i <= 3; i++) {
-    //   final file = File('${newDirectory.path}/file_$i.txt');
-    //   await file.writeAsString('This is file number $i');
-    // }
+    for (int i = 1; i <= 3; i++) {
+      final file = File('${newDirectory.path}/file_$i.txt');
+      await file.writeAsString('This is file number $i');
+    }
 
     // List all files in the directory and store FileInfo objects
     await for (var entity
