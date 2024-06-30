@@ -9,7 +9,7 @@ final theme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.dark,
   colorScheme: ColorScheme.fromSeed(
-    seedColor: Color.fromARGB(255, 139, 4, 206),
+    seedColor: const Color.fromARGB(255, 139, 4, 206),
     brightness: Brightness.dark,
   ).copyWith(
     primary: Colors.black,
