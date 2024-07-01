@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mad_project/models/file_object.dart';
+import 'package:mad_project/providers/aimodel.dart';
 import 'package:mad_project/providers/files.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pdf/widgets.dart' as pw;
+import 'package:file_picker/file_picker.dart';
 
 class FloatingActionPicker extends ConsumerWidget {
   const FloatingActionPicker({super.key});
@@ -24,9 +25,8 @@ class FloatingActionPicker extends ConsumerWidget {
       final uniqueFileName = '${date.toString()}.jpg';
 
       // Get the documents directory path
-      final directory = await getApplicationDocumentsDirectory();
-      final newPath =
-          File('${directory.path}/example_directory/$uniqueFileName');
+      final directory = await getTemporaryDirectory();
+      final newPath = File('${directory.path}/$uniqueFileName');
 
       // Move the captured image to the documents directory with a new name
       await file.copy(newPath.path);
@@ -37,12 +37,14 @@ class FloatingActionPicker extends ConsumerWidget {
           fileName: uniqueFileName,
           filePath: savedImagePath,
           date: formatter.format(date));
-      ref.read(filesProvider.notifier).addDoc(f);
+      // ref.read(filesProvider.notifier).addDoc(f);
+      final model = Model(file: f);
+      model.generateSummaryforImages();
 
       // Display a snackbar to indicate successful capture (optional)
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Image captured and saved successfully!'),
+          content: Text('Image captured and analysed successfully!'),
         ),
       );
     } else {
@@ -58,49 +60,58 @@ class FloatingActionPicker extends ConsumerWidget {
   Future<void> selectPicture(context, ref) async {
     final ImagePicker picker = ImagePicker();
     final List<XFile> images = await picker.pickMultiImage();
-
     if (images.isNotEmpty) {
-      final pdf = pw.Document();
-
-      for (var image in images) {
-        final imageFile = File(image.path);
-        final imageBytes = await imageFile.readAsBytes();
-        final pdfImage = pw.MemoryImage(imageBytes);
-
-        pdf.addPage(
-          pw.Page(
-            build: (pw.Context context) {
-              return pw.Center(
-                child: pw.Image(pdfImage),
-              );
-            },
-          ),
-        );
-      }
-
+      const List<FileObject> imageList = [];
+      final directory = await getTemporaryDirectory();
       // Get the application's document directory
-      final directory = await getApplicationDocumentsDirectory();
-      final DateTime date = DateTime.now();
-      final uniqueFileName = '${date.toString()}.pdf';
-      final file = File('${directory.path}/example_directory/$uniqueFileName');
-      await file.writeAsBytes(await pdf.save());
-
-      final filePath = file.path;
-      final FileObject f = FileObject(
-          fileName: uniqueFileName,
-          filePath: filePath,
-          date: formatter.format(date));
-      ref.read(filesProvider.notifier).addDoc(f);
+      for (int i = 0; i < images.length; i++) {
+        final DateTime date = DateTime.now();
+        final uniqueFileName = '${date.toString()}_${i + 1}.jpeg';
+        final file = File('${directory.path}/$uniqueFileName');
+        await file.writeAsBytes(await images[i].readAsBytes(), flush: true);
+        imageList.add(FileObject(
+            fileName: uniqueFileName,
+            filePath: file.path,
+            date: formatter.format(date)));
+      }
+      final model = Model(fileList: imageList);
+      model.generateSummaryforImageList();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Image captured and saved successfully!'),
+          content: Text('Images captured and analysed successfully'),
         ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Image capture cancelled.'),
+          content: Text('Images captured failed'),
+        ),
+      );
+    }
+  }
+
+  Future<void> selectFile(context, ref) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      FileObject f = FileObject(
+          fileName: file.uri.pathSegments.last,
+          filePath: file.path,
+          date: formatter.format(DateTime.now()));
+      final model = Model(file: f);
+      model.generateSummaryforText();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('File captured and analysed successfully'),
+        ),
+      );
+    } else {
+      // User canceled the picker
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('File Selection cancelled.'),
         ),
       );
     }
@@ -126,10 +137,22 @@ class FloatingActionPicker extends ConsumerWidget {
             ),
         SpeedDialChild(
           onTap: () {
-            selectPicture(context, ref);
+            selectFile(context, ref);
           },
           child: const Icon(Icons.file_copy_outlined),
           label: 'Select File',
+          labelStyle: Theme.of(context)
+              .textTheme
+              .labelMedium!
+              .copyWith(color: Theme.of(context).colorScheme.inverseSurface),
+          // onTap: _selectFile,
+        ),
+        SpeedDialChild(
+          onTap: () {
+            selectPicture(context, ref);
+          },
+          child: const Icon(Icons.image_outlined),
+          label: 'Select Images',
           labelStyle: Theme.of(context)
               .textTheme
               .labelMedium!

@@ -2,7 +2,7 @@ name: mad_project
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.1 <4.0.0'
+  sdk: ">=3.4.1 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -31,8 +31,6 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: ^2.1.3
-
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
@@ -42,9 +40,13 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   flutter_speed_dial: ^7.0.0
   image_picker: ^1.1.2
-  file_picker: ^8.0.4
+  file_picker: ^8.0.5
   pdf: ^3.10.8
   flutter_pdfview: ^1.3.2
+  google_generative_ai: ^0.4.3
+  flutter_image: ^4.1.11
+  syncfusion_flutter_pdf: ^26.1.39
+  google_mlkit_text_recognition: ^0.13.0
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +64,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

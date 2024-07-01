@@ -45,22 +45,6 @@ class FilesNotifier extends StateNotifier<List<FileObject>> {
       }
     }
 
-    // final file = File('${newDirectory.path}/file_$i.pdf');
-    // if (!await file.exists()) {
-    //   await file.writeAsString('This is file number $i', encoding: utf8);
-    // }
-
-    // List all files in the directory and store FileInfo objects
-    // await for (var entity
-    //     in newDirectory.list(recursive: false, followLinks: false)) {
-    //   FileObject f = FileObject(
-    //     fileName: entity.uri.pathSegments.last,
-    //     filePath: entity.path,
-    //     date: formatter.format(DateTime.now()),
-    //   );
-    //   convertTextFileToPdf(f);
-    // }
-
     await for (var entity
         in newDirectory.list(recursive: false, followLinks: false)) {
       if (entity is File) {
