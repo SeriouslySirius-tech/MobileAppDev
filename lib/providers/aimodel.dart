@@ -7,7 +7,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-const apiKey = "AIzaSyAx5PgOrh-LaE1_1iXx9YmCKrOrEem-sLE";
+const apiKey = "...";
 
 class Model {
   final FileObject? file;
